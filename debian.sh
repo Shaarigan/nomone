@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-REPO_BASE="https://raw.githubusercontent.com/shaarigan/nomone/main"
+REPO_BASE="https://raw.githubusercontent.com/Shaarigan/nomone/refs/heads/main"
 
 info() { echo -e "\n[INFO] $1"; }
 ok()   { echo "[ OK ] $1"; }
@@ -41,6 +41,7 @@ sudo apt -y upgrade
 info "Installing base packages..."
 sudo apt install -y \
     wget \
+    curl \
     git \
     unzip \
     zip \
