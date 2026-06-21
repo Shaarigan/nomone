@@ -82,11 +82,6 @@ EOF
 # Optional modules
 ########################################
 
-if ask "Install .NET SDK?"; then
-    download dotnet.sh
-    bash ./dotnet.sh
-fi
-
 if ask "Install JetBrains Rider?"; then
     download rider.sh
     bash ./rider.sh
