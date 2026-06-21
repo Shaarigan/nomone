@@ -13,7 +13,7 @@ sudo apt install curl
 ## Run
 
 ```
-bash <(curl -fsSL https://raw.githubusercontent.com/shaarigan/nomone/main/bootstrap.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/Shaarigan/nomone/refs/heads/main/setup.sh)
 ```
 
 ## What it does
