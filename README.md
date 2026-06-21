@@ -7,7 +7,7 @@ Minimal setup scripts for Debian/Ubuntu inside NOMone Desktop.
 Install curl first:
 
 ```bash
-sudo apt install curl
+sudo apt update && sudo apt install -y curl
 ```
 
 ## Run
