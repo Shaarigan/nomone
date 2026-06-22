@@ -95,6 +95,8 @@ info "Cleaning up..."
 sudo apt autoremove -y
 sudo apt clean
 
+rm -f debian.sh
+
 echo
 echo "Completed!"
 date
