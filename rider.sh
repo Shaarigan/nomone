@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 DOTNET_ROOT="/usr/share/dotnet"
-RIDER_VERSION="2026.1.3"="2026.1.3"
+RIDER_VERSION="2026.1.3"
 
 info() { echo -e "\n[INFO] $1"; }
 ok()   { echo "[ OK ] $1"; }
@@ -27,6 +27,7 @@ sudo apt install -y \
 ########################################
 
 info "Fetching installer..."
+info https://dot.net/v1/dotnet-install.sh
 curl -fsSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
 chmod +x dotnet-install.sh
 
@@ -47,6 +48,11 @@ sudo ln -sf $DOTNET_ROOT/dotnet /usr/local/bin/dotnet
 info "Cleaning up..."
 rm -f dotnet-install.sh
 
+#Workaround for .Net GC Heap error on proot environment
+
+#export DOTNET_ROOT=/usr/share/dotnet
+export DOTNET_GCHeapHardLimit=1C0000000
+
 echo
 dotnet --info
 
@@ -55,10 +61,11 @@ dotnet --info
 ########################################
 
 info "Fetching package..."
+info "https://download.jetbrains.com/rider/JetBrains.Rider-$RIDER_VERSION-aarch64.tar.gz"
 curl -fsSL "https://download.jetbrains.com/rider/JetBrains.Rider-$RIDER_VERSION-aarch64.tar.gz" -o rider.tar.gz
 
 info "Installing Jetbrains Rider..."
-RIDER_DIR=$(tar -tf rider.tar.gz | head -1 | cut -d/ -f1)
+RIDER_DIR="JetBrains Rider-$RIDER_VERSION"
 sudo tar -xzf rider.tar.gz -C /opt
 
 sudo mv "/opt/$RIDER_DIR" "/opt/JetBrains Rider"
