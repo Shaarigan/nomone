@@ -31,8 +31,13 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Shaarigan/nomone/refs/heads/
 - Sets timezone (Europe/Berlin)
 - Disables auto screen lock
 - Optional installation:
-  - .NET SDK
-  - JetBrains Rider
+  - .NET SDK*
+  - JetBrains Rider*
+
+**Sets the following environment variable to fix the .NET GC error 0x800700E on ARM64 via proot*
+```bash
+DOTNET_GCHeapHardLimit=1C0000000
+```
 
 ## Supported systems
 
