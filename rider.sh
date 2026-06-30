@@ -3,6 +3,7 @@ set -Eeuo pipefail
 
 DESKTOP_DIR="$HOME/Desktop"
 DOTNET_ROOT="/usr/share/dotnet"
+STARTUP_SCRIPT="/NOMone/startup.sh"
 RIDER_VERSION="2026.1.3"
 
 info() { echo -e "\n[INFO] $1"; }
@@ -50,11 +51,17 @@ info "Cleaning up..."
 rm -f dotnet-install.sh
 
 #Workaround for .Net GC Heap error on proot environment
-if ! grep -q "DOTNET_GCHeapHardLimit" "$HOME/.bashrc"; then
-cat >> "$HOME/.bashrc" <<'EOF'
-
-export DOTNET_GCHeapHardLimit=1C0000000
-EOF
+if [ -f "$STARTUP_SCRIPT" ]; then
+    if ! grep -q '^export DOTNET_GCHeapHardLimit=' "$STARTUP_SCRIPT"; then
+        if grep -q '^# Launch desktop,' "$STARTUP_SCRIPT"; then
+            sed -i '/^# Launch desktop,/i export DOTNET_GCHeapHardLimit=1C0000000\n' "$STARTUP_SCRIPT"
+            info "Added DOTNET_GCHeapHardLimit to $STARTUP_SCRIPT"
+        else
+            warn "Could not patch $STARTUP_SCRIPT: Launch desktop marker not found"
+        fi
+    else
+        info "DOTNET_GCHeapHardLimit already configured"
+    fi
 fi
 export DOTNET_GCHeapHardLimit=1C0000000
 
@@ -88,7 +95,7 @@ Version=1.0
 Type=Application
 Name=JetBrains Rider
 Comment=.NET IDE
-Exec=env DOTNET_GCHeapHardLimit=1C0000000 "/opt/JetBrains Rider/bin/rider"
+Exec="/opt/JetBrains Rider/bin/rider"
 Icon=/opt/JetBrains Rider/bin/rider.svg
 Terminal=false
 Categories=Development;IDE;

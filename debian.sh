@@ -2,6 +2,7 @@
 set -Eeuo pipefail
 
 REPO_BASE="https://raw.githubusercontent.com/Shaarigan/nomone/refs/heads/main"
+STARTUP_SCRIPT="/NOMone/startup.sh"
 
 info() { echo -e "\n[INFO] $1"; }
 ok()   { echo "[ OK ] $1"; }
@@ -55,6 +56,33 @@ sudo apt install -y \
 
 info "Installing KDE Plasma..."
 sudo apt install -y kde-plasma-desktop
+
+if [ -f "$STARTUP_SCRIPT" ]; then
+    if ! grep -q 'startplasma-x11 &' "$STARTUP_SCRIPT"; then
+        if grep -q '^# Launch desktop,' "$STARTUP_SCRIPT"; then
+            if ask "Activate KDE Plasma as the default desktop now?"; then
+                sed -i 's|^xcompmgr &$|#xcompmgr \&|' "$STARTUP_SCRIPT"
+                sed -i 's|^openbox &$|#openbox \&|' "$STARTUP_SCRIPT"
+                sed -i 's|^sh ~/.fehbg$|#sh ~/.fehbg|' "$STARTUP_SCRIPT"
+                sed -i 's|^plank &$|#plank \&|' "$STARTUP_SCRIPT"
+                sed -i '/^#plank &/a\
+startplasma-x11 \&
+' "$STARTUP_SCRIPT"
+                info "KDE Plasma has been enabled"
+            else
+                sed -i '/^plank &/a\
+#startplasma-x11 \&
+' "$STARTUP_SCRIPT"
+                info "KDE Plasma launcher added but left disabled"
+                info "Uncomment 'startplasma-x11 &' in $STARTUP_SCRIPT to enable Plasma later"
+            fi
+        else
+            warn "Could not patch $STARTUP_SCRIPT: Launch desktop marker not found"
+        fi
+    else
+        info "Plasma launcher already present"
+    fi
+fi
 
 ########################################
 # Timezone
